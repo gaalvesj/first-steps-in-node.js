@@ -10,13 +10,21 @@ const server = http.createServer((req, res) => {
         res.write('<body><form action="/message" method="POST"><input type="text" name="message"><button type="submit">Send</button></form></body>');
         res.write('</html>');
         return res.end();
-      }
+    }
       if (url === '/message' && method === 'POST'){
-        fs.writeFileSync('message.txt', 'DUMMY');
+        const body = [];
+        req.on('data', (chunck) => {
+        body.push(chunck)
+        });
+        req.on('end', () => {
+        const parsedBody = Buffer.concat(body).toString();
+        const message = parsedBody.split('=')[1];
+        fs.writeFileSync('message.txt', message);
+        })
         res.statusCode = 302;
         res.setHeader('Location', '/');
         return res.end();
-      }
+        }
     res.setHeader('Contet-type', 'text/html');
     res.write('<html>');
     res.write('<head><title>My First Page</title></head>')
