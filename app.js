@@ -11,9 +11,9 @@ app.use('/add-product', (req, res, next) => {
 
 app.post('/product', (req, res, next) => {
     //retirando o erro de object null prototype do console.
+     // console.log(req.body);
     const obj = JSON.parse(JSON.stringify(req.body));
     console.log(obj);
-    // console.log(req.body);
     res.redirect('/');
 });
 
