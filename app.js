@@ -1,24 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const app = express();
 
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
+
 app.use(bodyParser.urlencoded({extended: false}));
 
-app.use('/add-product', (req, res, next) => {
-  res.send('<form action="/product" method="POST"><input type="text" name="title"><button type="submit">Add Product</button></form>');
-});
+app.use('/admin', adminRoutes);
+app.use(shopRoutes);
 
-app.post('/product', (req, res, next) => {
-    //retirando o erro de object null prototype do console.
-    const obj = JSON.parse(JSON.stringify(req.body));
-    console.log(obj);
-    // console.log(req.body);
-    res.redirect('/');
-});
-
-app.use('/', (req, res, next) => {
-  res.send('<h1>Hello from Express!</h1>');
-});
+//middleware do page not found
+app.use((req, res) => {
+    res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
+})
 
 app.listen(3000);
